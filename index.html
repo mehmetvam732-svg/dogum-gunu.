@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Senin İçin ❤️</title>
+
+<style>
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #ff758c, #ff7eb3, #b967ff);
+    color: white;
+    overflow-x: hidden;
+}
+
+.hearts {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 0;
+}
+
+.heart {
+    position: absolute;
+    bottom: -50px;
+    animation: float 7s linear infinite;
+    opacity: 0.8;
+}
+
+@keyframes float {
+    0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+    20% { opacity: 0.9; }
+    100% { transform: translateY(-110vh) rotate(360deg); opacity: 0; }
+}
+
+.container {
+    position: relative;
+    z-index: 2;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 25px;
+}
+
+.card {
+    width: 100%;
+    max-width: 500px;
+    padding: 35px 25px;
+    border-radius: 30px;
+    text-align: center;
+    background: rgba(255,255,255,0.16);
+    backdrop-filter: blur(15px);
+    box-shadow: 0 15px 50px rgba(0,0,0,0.25);
+}
+
+h1 { font-size: 34px; margin-bottom: 15px; }
+p { font-size: 18px; line-height: 1.6; }
+
+.btn-group {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 25px;
+}
+
+button {
+    border: none;
+    padding: 14px 28px;
+    border-radius: 30px;
+    background: white;
+    color: #e84368;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+button.secondary {
+    background: rgba(255, 255, 255, 0.3);
+    color: white;
+}
+
+button:hover { transform: scale(1.08); }
+
+.hidden { display: none; }
+
+.big-heart { font-size: 70px; animation: beat 1s infinite; }
+
+@keyframes beat { 50% { transform: scale(1.18); } }
+
+.date-box {
+    margin: 20px 0;
+    padding: 18px;
+    border-radius: 20px;
+    background: rgba(255,255,255,0.15);
+}
+
+.date { font-size: 22px; font-weight: bold; }
+
+.photo-area {
+    margin-top: 25px;
+    padding: 20px;
+    border-radius: 20px;
+    background: rgba(255,255,255,0.12);
+}
+
+.photo-card {
+    width: 100%;
+    max-height: 350px;
+    object-fit: cover;
+    border-radius: 15px;
+    border: 2px solid rgba(255,255,255,0.5);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    margin-top: 15px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="hearts" id="hearts"></div>
+
+<div class="container">
+
+    <!-- 1. ADIM -->
+    <div class="card" id="step1">
+        <div class="big-heart">🎁</div>
+        <h1>Sana Bir Sürprizim Var ❤️</h1>
+        <p>Aşağıdaki seçeneklerden birini seçerek devam edebilirsin.</p>
+        <div class="btn-group">
+            <button class="secondary" onclick="goBackStart()">Geri Dön</button>
+            <button onclick="nextStep(2)">İleri ❤️</button>
+        </div>
+    </div>
+
+    <!-- 2. ADIM -->
+    <div class="card hidden" id="step2">
+        <div class="big-heart">💖</div>
+        <p>Mehmet seni her şeyden ve herkesten fazla seviyor, biliyorsun değil mi? 💗</p>
+        <div class="btn-group">
+            <button onclick="nextStep(3)">Biliyorum 💕</button>
+            <button class="secondary" onclick="noAnswer()">Hayır 🙈</button>
+        </div>
+    </div>
+
+    <!-- 3. ADIM (SON EKRAN) -->
+    <div class="card hidden" id="step3">
+        <div class="big-heart">🎂</div>
+        <h1>İYİ Kİ DOĞDUN CANIM CİĞERİM!</h1>
+
+        <p>Bugün senin günün. ✨</p>
+        <p>Hayatıma girdiğin için gerçekten çok mutluyum. Bu küçük site de sana hazırladığım küçük bir sürpriz. ❤️</p>
+
+        <div class="date-box">
+            <div>🌸 Tanıştığımız gün</div>
+            <div class="date">4 Mayıs 2026</div>
+        </div>
+
+        <div class="date-box">
+            <div>💕 Birlikte olmaya başladığımız gün</div>
+            <div class="date">7 Mayıs 2026</div>
+        </div>
+
+        <p>Umarım yeni yaşında yüzün hep güler, güzel anıların hiç bitmez. 💗</p>
+
+        <div class="photo-area">
+            <h2>📸 Bizden Anılar</h2>
+            <img src="https://i.ibb.co/chQV2FD7/image.jpg" alt="Bizden Anı" class="photo-card">
+        </div>
+
+        <p style="font-size:30px; margin-top:20px;">❤️ 💕 💗 💖 💞</p>
+    </div>
+
+</div>
+
+<script>
+function nextStep(stepNumber) {
+    document.getElementById("step1").classList.add("hidden");
+    document.getElementById("step2").classList.add("hidden");
+    document.getElementById("step3").classList.add("hidden");
+
+    document.getElementById("step" + stepNumber).classList.remove("hidden");
+}
+
+function goBackStart() {
+    alert("Buradan kaçış yok, sürprizi görmen lazım! ❤️");
+}
+
+function noAnswer() {
+    alert("Yalan söyleme, gayet iyi biliyorsun! 😉❤️");
+    nextStep(3);
+}
+
+function createHeart() {
+    const heart = document.createElement("div");
+    heart.className = "heart";
+    const hearts = ["❤️", "💕", "💗", "💖", "💞"];
+    heart.innerHTML = hearts[Math.floor(Math.random() * hearts.length)];
+    heart.style.left = Math.random() * 100 + "%";
+    heart.style.fontSize = (15 + Math.random() * 25) + "px";
+    heart.style.animationDuration = (5 + Math.random() * 5) + "s";
+    document.getElementById("hearts").appendChild(heart);
+    setTimeout(() => { heart.remove(); }, 10000);
+}
+setInterval(createHeart, 500);
+</script>
+
+</body>
+</html>
