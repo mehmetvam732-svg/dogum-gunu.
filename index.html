@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Senin İçin ❤️</title>
 
+<!-- Konfeti Efekti Kütüphanesi -->
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+
 <style>
 * { box-sizing: border-box; }
 
@@ -15,6 +18,7 @@ body {
     background: linear-gradient(135deg, #ff758c, #ff7eb3, #b967ff);
     color: white;
     overflow-x: hidden;
+    user-select: none;
 }
 
 .hearts {
@@ -36,6 +40,26 @@ body {
     0% { transform: translateY(0) rotate(0deg); opacity: 0; }
     20% { opacity: 0.9; }
     100% { transform: translateY(-110vh) rotate(360deg); opacity: 0; }
+}
+
+/* Dokunma/Tıklama Kalp Efekti */
+.click-heart {
+    position: absolute;
+    font-size: 20px;
+    pointer-events: none;
+    z-index: 9999;
+    animation: clickPop 0.8s ease-out forwards;
+}
+
+@keyframes clickPop {
+    0% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(0.5);
+    }
+    100% {
+        opacity: 0;
+        transform: translate(calc(-50% + var(--x)), calc(-50% + var(--y))) scale(1.5);
+    }
 }
 
 .container {
@@ -102,27 +126,15 @@ button:hover { transform: scale(1.08); }
 }
 
 .date { font-size: 22px; font-weight: bold; }
-
-.photo-area {
-    margin-top: 25px;
-    padding: 20px;
-    border-radius: 20px;
-    background: rgba(255,255,255,0.12);
-}
-
-.photo-card {
-    width: 100%;
-    max-height: 350px;
-    object-fit: cover;
-    border-radius: 15px;
-    border: 2px solid rgba(255,255,255,0.5);
-    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
-    margin-top: 15px;
-}
 </style>
 </head>
 
 <body>
+
+<!-- Arka Plan Müzik Çaları -->
+<audio id="bgMusic" loop>
+    <source src="https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3" type="audio/mpeg">
+</audio>
 
 <div class="hearts" id="hearts"></div>
 
@@ -169,23 +181,51 @@ button:hover { transform: scale(1.08); }
 
         <p>Umarım yeni yaşında yüzün hep güler, güzel anıların hiç bitmez. 💗</p>
 
-        <div class="photo-area">
-            <h2>📸 Bizden Anılar</h2>
-            <img src="https://i.ibb.co/chQV2FD7/image.jpg" alt="Bizden Anı" class="photo-card">
-        </div>
-
         <p style="font-size:30px; margin-top:20px;">❤️ 💕 💗 💖 💞</p>
     </div>
 
 </div>
 
 <script>
+let musicStarted = false;
+
+function playMusic() {
+    if (!musicStarted) {
+        const music = document.getElementById("bgMusic");
+        music.play().catch(e => console.log("Müzik başlatılamadı"));
+        musicStarted = true;
+    }
+}
+
+function launchConfetti() {
+    var count = 200;
+    var defaults = { origin: { y: 0.7 } };
+
+    function fire(particleRatio, opts) {
+        confetti(Object.assign({}, defaults, opts, {
+            particleCount: Math.floor(count * particleRatio)
+        }));
+    }
+
+    fire(0.25, { spread: 26, startVelocity: 55 });
+    fire(0.2, { spread: 60 });
+    fire(0.35, { spread: 100, decay: 0.91, scalar: 0.8 });
+    fire(0.1, { spread: 120, startVelocity: 25, decay: 0.92, scalar: 1.2 });
+    fire(0.1, { spread: 120, startVelocity: 45 });
+}
+
 function nextStep(stepNumber) {
+    playMusic();
+
     document.getElementById("step1").classList.add("hidden");
     document.getElementById("step2").classList.add("hidden");
     document.getElementById("step3").classList.add("hidden");
 
     document.getElementById("step" + stepNumber).classList.remove("hidden");
+
+    if (stepNumber === 3) {
+        launchConfetti();
+    }
 }
 
 function goBackStart() {
@@ -197,6 +237,7 @@ function noAnswer() {
     nextStep(3);
 }
 
+// Arka Planda Yüzen Kalpler
 function createHeart() {
     const heart = document.createElement("div");
     heart.className = "heart";
@@ -209,6 +250,27 @@ function createHeart() {
     setTimeout(() => { heart.remove(); }, 10000);
 }
 setInterval(createHeart, 500);
+
+// Tıklayınca Patlayan Kalp Yağmuru Efekti
+document.addEventListener("click", function(e) {
+    const heartTypes = ["❤️", "💕", "💖", "💗", "✨"];
+    for (let i = 0; i < 6; i++) {
+        const heart = document.createElement("div");
+        heart.className = "click-heart";
+        heart.innerHTML = heartTypes[Math.floor(Math.random() * heartTypes.length)];
+        heart.style.left = e.clientX + "px";
+        heart.style.top = e.clientY + "px";
+        
+        // Rastgele yön saçılması
+        const x = (Math.random() - 0.5) * 120 + "px";
+        const y = (Math.random() - 0.5) * 120 + "px";
+        heart.style.setProperty("--x", x);
+        heart.style.setProperty("--y", y);
+        
+        document.body.appendChild(heart);
+        setTimeout(() => { heart.remove(); }, 800);
+    }
+});
 </script>
 
 </body>
